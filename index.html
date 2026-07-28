@@ -190,6 +190,22 @@
       .next-btn.show {
         display: block;
       }
+      .end-btn {
+        display: block;
+        margin-top: 10px;
+        width: 100%;
+        padding: 11px;
+        background: transparent;
+        color: #e94560;
+        border: 2px solid #e94560;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        font-weight: bold;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.2s;
+      }
+      .end-btn:hover { background: #e94560; color: #fff; }
       /* Result screen */
       .result-screen {
         display: none;
@@ -323,6 +339,9 @@
         <div class="feedback" id="feedback"></div>
         <button class="next-btn" id="nextBtn" onclick="nextQuestion()">
           السؤال التالي ◀
+        </button>
+        <button class="end-btn" id="endBtn" onclick="confirmEndQuiz()">
+          🏁 إنهاء الاختبار
         </button>
       </div>
 
@@ -617,6 +636,16 @@ function onTimeout() {
   feedback.className = 'feedback show timeout-fb';
 
   document.getElementById('nextBtn').className = 'next-btn show';
+}
+
+function confirmEndQuiz() {
+  if (confirm('هل أنت متأكد أنك تريد إنهاء الاختبار؟ ستُحتسب الأسئلة غير المُجاب عنها كإجابات خاطئة.')) {
+    clearInterval(timer);
+    // Count remaining unanswered questions as wrong
+    const remaining = questions.length - currentIndex - (answered ? 1 : 0);
+    wrongCount += remaining;
+    showResult();
+  }
 }
 
 function nextQuestion() {
