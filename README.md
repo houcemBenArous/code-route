@@ -8,9 +8,14 @@ An interactive Arabic-language quiz app to help prepare for the **Tunisian Categ
 
 ```
 code permis/
-├── quiz.html       # The quiz application (open this in your browser)
-├── .gitignore      # Excludes rules.md from version control
-└── README.md       # This file
+├── index.html        # Markup only — app shell and screen templates
+├── css/
+│   └── style.css     # All styles (layout, components, themes)
+├── js/
+│   ├── questions.js  # Question data (75+ QCM questions)
+│   └── quiz.js       # Quiz engine (state, timer, scoring, rendering)
+├── .gitignore        # Excludes rules.md from version control
+└── README.md         # This file
 ```
 
 > **Note:** `rules.md` (the source study material) is listed in `.gitignore` and is not tracked by Git.
