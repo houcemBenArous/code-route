@@ -407,3 +407,132 @@ h1 {
 }
 
 .back-packs-btn:hover { background: #0f3460; color: #fff; }
+
+/* =============================================
+   End Quiz Modal
+   ============================================= */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 15, 40, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal-box {
+  background: #fff;
+  border-radius: 20px;
+  padding: 36px 32px 28px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+  animation: modalIn 0.25s ease;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.88) translateY(20px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0);    }
+}
+
+.modal-icon {
+  font-size: 3.2rem;
+  margin-bottom: 12px;
+}
+
+.modal-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 10px;
+}
+
+.modal-msg {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.65;
+  margin-bottom: 16px;
+}
+
+.modal-msg strong {
+  color: #e94560;
+}
+
+.modal-stats {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  background: #f8f9ff;
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 22px;
+  font-size: 0.88rem;
+  color: #444;
+}
+
+.modal-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.modal-stat-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.modal-stat-label {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-btn {
+  width: 100%;
+  padding: 13px;
+  border-radius: 10px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  transition: all 0.2s;
+}
+
+.modal-btn-confirm {
+  background: linear-gradient(135deg, #e94560, #c0304d);
+  color: #fff;
+}
+
+.modal-btn-confirm:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.modal-btn-cancel {
+  background: #f0f4ff;
+  color: #0f3460;
+  border: 2px solid #d0d8f0;
+}
+
+.modal-btn-cancel:hover {
+  background: #0f3460;
+  color: #fff;
+  border-color: #0f3460;
+}

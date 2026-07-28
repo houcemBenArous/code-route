@@ -60,6 +60,27 @@
 
     </div>
 
+    <!-- ══════════════ END QUIZ MODAL ══════════════ -->
+    <div class="modal-overlay" id="endQuizModal">
+      <div class="modal-box">
+        <div class="modal-icon">🏁</div>
+        <h2 class="modal-title">إنهاء الاختبار؟</h2>
+        <p class="modal-msg">
+          الأسئلة غير المُجاب عنها ستُحتسب كإجابات
+          <strong>خاطئة</strong> وستظهر نتيجتك الآن.
+        </p>
+        <div class="modal-stats" id="modalStats"></div>
+        <div class="modal-actions">
+          <button class="modal-btn modal-btn-confirm" onclick="endQuizConfirmed()">
+            نعم، إنهاء الاختبار
+          </button>
+          <button class="modal-btn modal-btn-cancel" onclick="closeEndQuizModal()">
+            لا، متابعة الاختبار
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script src="js/questions.js"></script>
     <script src="js/quiz.js"></script>
   </body>

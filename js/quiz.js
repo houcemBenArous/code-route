@@ -302,8 +302,32 @@ function nextQuestion() {
 }
 
 function confirmEndQuiz() {
-  const msg = 'هل أنت متأكد أنك تريد إنهاء الاختبار؟\nستُحتسب الأسئلة غير المُجاب عنها كإجابات خاطئة.';
-  if (!confirm(msg)) return;
+  // Populate live stats in the modal
+  const answered_so_far = currentIndex + (answered ? 1 : 0);
+  const remaining       = questions.length - answered_so_far;
+  document.getElementById('modalStats').innerHTML = `
+    <div class="modal-stat-item">
+      <span class="modal-stat-value">${answered_so_far}</span>
+      <span class="modal-stat-label">سؤال أُجيب عنه</span>
+    </div>
+    <div class="modal-stat-item">
+      <span class="modal-stat-value" style="color:#28a745">${correctCount}</span>
+      <span class="modal-stat-label">إجابة صحيحة</span>
+    </div>
+    <div class="modal-stat-item">
+      <span class="modal-stat-value" style="color:#e94560">${remaining}</span>
+      <span class="modal-stat-label">سؤال متبقٍّ</span>
+    </div>
+  `;
+  document.getElementById('endQuizModal').classList.add('open');
+}
+
+function closeEndQuizModal() {
+  document.getElementById('endQuizModal').classList.remove('open');
+}
+
+function endQuizConfirmed() {
+  closeEndQuizModal();
   clearInterval(timer);
   const remaining = questions.length - currentIndex - (answered ? 1 : 0);
   wrongCount += remaining;
@@ -349,3 +373,8 @@ function restartCurrentPack() {
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 renderPackScreen();
+
+// Close modal when clicking the dark overlay (outside the box)
+document.getElementById('endQuizModal').addEventListener('click', function (e) {
+  if (e.target === this) closeEndQuizModal();
+});
