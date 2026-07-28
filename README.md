@@ -9,9 +9,11 @@ An interactive Arabic-language quiz app to help prepare for the **Tunisian Categ
 ```
 code permis/
 ├── quiz.html       # The quiz application (open this in your browser)
-├── rules.md        # Source material — all driving rules and regulations
+├── .gitignore      # Excludes rules.md from version control
 └── README.md       # This file
 ```
+
+> **Note:** `rules.md` (the source study material) is listed in `.gitignore` and is not tracked by Git.
 
 ---
 
@@ -78,3 +80,5 @@ You can restart the quiz at any time from the result screen. Each new session re
 ## 📝 Source Material
 
 All quiz content is derived from `rules.md`, which contains the official Tunisian driving regulations for Category B, including traffic law, first aid procedures, vehicle mechanics, and road sign rules.
+
+`rules.md` is excluded from version control via `.gitignore` — it is private study material and should not be committed to any repository.
