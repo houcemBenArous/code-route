@@ -1,10 +1,115 @@
 /**
  * quiz.js
- * Core quiz engine — state management, timer, rendering, scoring.
+ * Core quiz engine — pack definitions, state management, timer, rendering, scoring.
  */
 
+// ─── Pack Definitions ─────────────────────────────────────────────────────────
+
+/**
+ * Each pack:
+ *   id        – unique key
+ *   name      – Arabic display name
+ *   icon      – emoji
+ *   desc      – short Arabic description shown on the card
+ *   filter    – function(q) → true if question belongs to this pack
+ *   limit     – max questions per session (null = all)
+ *   featured  – true → red highlight card (main pack)
+ */
+const PACKS = [
+  {
+    id:       'all',
+    name:     'الحزمة الكاملة',
+    icon:     '📚',
+    desc:     'جميع الأسئلة من كل المحاور',
+    filter:   () => true,
+    limit:    null,
+    featured: true,
+  },
+  {
+    id:     'random30',
+    name:   '30 سؤال عشوائي',
+    icon:   '🎲',
+    desc:   '30 سؤالاً مختلطاً من جميع المحاور',
+    filter: () => true,
+    limit:  30,
+  },
+  {
+    id:     'violations',
+    name:   'المخالفات والعقوبات',
+    icon:   '⚖️',
+    desc:   'خصم النقاط، الغرامات، السجن',
+    filter: q => q.cat === 'المخالفات',
+    limit:  null,
+  },
+  {
+    id:     'mechanics',
+    name:   'الميكانيك والصيانة',
+    icon:   '🔧',
+    desc:   'البطارية، العجلات، الزيوت، الشمعات',
+    filter: q => q.cat === 'الميكانيك',
+    limit:  null,
+  },
+  {
+    id:     'firstaid',
+    name:   'الإسعافات الأولية',
+    icon:   '🚑',
+    desc:   'التنفس الاصطناعي، النزيف، أرقام الطوارئ',
+    filter: q => q.cat === 'الإسعافات الأولية',
+    limit:  null,
+  },
+  {
+    id:     'speed',
+    name:   'السرعة والمطر',
+    icon:   '🚦',
+    desc:   'حدود السرعة داخل وخارج مناطق العمران',
+    filter: q => q.cat === 'السرعة' || q.cat === 'المطر والأمان',
+    limit:  null,
+  },
+  {
+    id:     'parking',
+    name:   'الوقوف والتوقف',
+    icon:   '🅿️',
+    desc:   'المسافات، ألوان الأرصفة، الوقوف المفرط',
+    filter: q => q.cat === 'الوقوف والتوقف',
+    limit:  null,
+  },
+  {
+    id:     'lights',
+    name:   'الأضواء',
+    icon:   '💡',
+    desc:   'ضوء الطريق، المقاطعة، الوضعية',
+    filter: q => q.cat === 'الأضواء',
+    limit:  null,
+  },
+  {
+    id:     'overtaking',
+    name:   'المجاوزة وإشارات الطريق',
+    icon:   '🛣️',
+    desc:   'قواعد المجاوزة، الأولويات، الإشارات',
+    filter: q => q.cat === 'المجاوزة' || q.cat === 'إشارات الطريق',
+    limit:  null,
+  },
+  {
+    id:     'license',
+    name:   'رخصة صنف ب وتجديدها',
+    icon:   '🪪',
+    desc:   'شروط الرخصة، الفحص الفني، التجديد',
+    filter: q => q.cat === 'رخصة صنف ب' || q.cat === 'الفحص الفني' || q.cat === 'تجديد الرخصة',
+    limit:  null,
+  },
+  {
+    id:     'load',
+    name:   'الحمولة',
+    icon:   '📦',
+    desc:   'قواعد الحمولة الأمامية والخلفية',
+    filter: q => q.cat === 'الحمولة',
+    limit:  null,
+  },
+];
+
 // ─── State ────────────────────────────────────────────────────────────────────
-let questions   = [];
+let currentPack  = null;   // active PACKS entry
+let questions    = [];
 let currentIndex = 0;
 let correctCount = 0;
 let wrongCount   = 0;
@@ -14,11 +119,7 @@ let answered     = false;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-/**
- * Fisher-Yates shuffle — returns a shuffled copy of the array.
- * @param {Array} arr
- * @returns {Array}
- */
+/** Fisher-Yates shuffle — returns a new shuffled array. */
 function shuffle(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -28,24 +129,64 @@ function shuffle(arr) {
   return a;
 }
 
-/** Shorthand for document.getElementById */
-function $(id) {
-  return document.getElementById(id);
+/** Shorthand for getElementById. */
+const $ = id => document.getElementById(id);
+
+// ─── Pack Screen ──────────────────────────────────────────────────────────────
+
+/** Render all pack cards into #packsGrid. */
+function renderPackScreen() {
+  $('packScreen').style.display    = 'block';
+  $('quizScreen').style.display    = 'none';
+  $('resultScreen').classList.remove('show');
+
+  const grid = $('packsGrid');
+  grid.innerHTML = '';
+
+  PACKS.forEach(pack => {
+    // Count available questions
+    const pool  = allQuestions.filter(pack.filter);
+    const count = pack.limit ? Math.min(pack.limit, pool.length) : pool.length;
+
+    const card = document.createElement('div');
+    card.className = 'pack-card' + (pack.featured ? ' featured' : '');
+    card.innerHTML = `
+      <div class="pack-icon">${pack.icon}</div>
+      <div class="pack-name">${pack.name}</div>
+      <div class="pack-meta">${pack.desc}</div>
+      <span class="pack-badge">${count} سؤال</span>
+    `;
+    card.onclick = () => startPack(pack);
+    grid.appendChild(card);
+  });
 }
 
 // ─── Quiz Lifecycle ───────────────────────────────────────────────────────────
 
-/** Initialise and start a new quiz session. */
-function startQuiz() {
-  questions    = shuffle(allQuestions);
+/**
+ * Start a quiz session for the given pack.
+ * @param {object} pack - one entry from PACKS
+ */
+function startPack(pack) {
+  currentPack = pack;
+
+  // Build question pool
+  let pool = shuffle(allQuestions.filter(pack.filter));
+  if (pack.limit && pool.length > pack.limit) {
+    pool = pool.slice(0, pack.limit);
+  }
+
+  questions    = pool;
   currentIndex = 0;
   correctCount = 0;
   wrongCount   = 0;
 
-  $('startScreen').style.display = 'none';
-  $('quizScreen').style.display  = 'block';
+  $('packScreen').style.display    = 'none';
+  $('quizScreen').style.display    = 'block';
   $('resultScreen').classList.remove('show');
-  $('totalQ').textContent = questions.length;
+
+  $('packLabel').textContent = `${pack.icon} ${pack.name}`;
+  $('totalQ').textContent    = questions.length;
 
   loadQuestion();
 }
@@ -59,27 +200,23 @@ function loadQuestion() {
   const q     = questions[currentIndex];
   const total = questions.length;
 
-  // Stats & progress
-  $('currentQ').textContent    = currentIndex + 1;
+  $('currentQ').textContent     = currentIndex + 1;
   $('correctCount').textContent = correctCount;
   $('wrongCount').textContent   = wrongCount;
   $('progressBar').style.width  = `${(currentIndex / total) * 100}%`;
 
-  // Question
-  $('categoryBadge').innerHTML = `<span class="category-badge">${q.cat}</span>`;
+  $('categoryBadge').innerHTML  = `<span class="category-badge">${q.cat}</span>`;
   $('questionText').textContent = q.q;
 
-  // Reset feedback & next button
   const feedback = $('feedback');
   feedback.className   = 'feedback';
   feedback.textContent = '';
   $('nextBtn').className = 'next-btn';
 
-  // Build shuffled options
   const container = $('optionsContainer');
   container.innerHTML = '';
 
-  shuffle([0, 1, 2]).forEach((origIdx) => {
+  shuffle([0, 1, 2]).forEach(origIdx => {
     const btn       = document.createElement('button');
     btn.className   = 'option-btn';
     btn.textContent = q.opts[origIdx];
@@ -87,15 +224,11 @@ function loadQuestion() {
     container.appendChild(btn);
   });
 
-  // Start countdown
   updateTimerDisplay();
   timer = setInterval(() => {
     timeLeft--;
     updateTimerDisplay();
-    if (timeLeft <= 0) {
-      clearInterval(timer);
-      onTimeout();
-    }
+    if (timeLeft <= 0) { clearInterval(timer); onTimeout(); }
   }, 1000);
 }
 
@@ -109,11 +242,6 @@ function updateTimerDisplay() {
 
 // ─── Answer Handling ──────────────────────────────────────────────────────────
 
-/**
- * Called when the user selects an answer.
- * @param {HTMLButtonElement} btn      - The clicked button
- * @param {boolean}           isCorrect
- */
 function selectAnswer(btn, isCorrect) {
   if (answered) return;
   answered = true;
@@ -140,7 +268,6 @@ function selectAnswer(btn, isCorrect) {
   $('nextBtn').className = 'next-btn show';
 }
 
-/** Called when the timer runs out before the user answers. */
 function onTimeout() {
   if (answered) return;
   answered = true;
@@ -153,14 +280,9 @@ function onTimeout() {
   const feedback       = $('feedback');
   feedback.textContent = '⏰ انتهى الوقت! الإجابة الصحيحة مُعلَّمة باللون الأخضر.';
   feedback.className   = 'feedback show timeout-fb';
-
   $('nextBtn').className = 'next-btn show';
 }
 
-/**
- * Highlight the correct answer button in green.
- * @param {NodeList} allBtns
- */
 function revealCorrectAnswer(allBtns) {
   const correctText = questions[currentIndex].opts[questions[currentIndex].ans];
   allBtns.forEach(b => {
@@ -170,7 +292,6 @@ function revealCorrectAnswer(allBtns) {
 
 // ─── Navigation ───────────────────────────────────────────────────────────────
 
-/** Advance to the next question or show results if the quiz is over. */
 function nextQuestion() {
   currentIndex++;
   if (currentIndex >= questions.length) {
@@ -180,23 +301,22 @@ function nextQuestion() {
   }
 }
 
-/**
- * Ask for confirmation then end the quiz early.
- * Remaining unanswered questions are counted as wrong.
- */
 function confirmEndQuiz() {
   const msg = 'هل أنت متأكد أنك تريد إنهاء الاختبار؟\nستُحتسب الأسئلة غير المُجاب عنها كإجابات خاطئة.';
   if (!confirm(msg)) return;
-
   clearInterval(timer);
   const remaining = questions.length - currentIndex - (answered ? 1 : 0);
   wrongCount += remaining;
   showResult();
 }
 
+function goBackToPacks() {
+  clearInterval(timer);
+  renderPackScreen();
+}
+
 // ─── Results ──────────────────────────────────────────────────────────────────
 
-/** Calculate score and render the result screen. */
 function showResult() {
   clearInterval(timer);
   $('quizScreen').style.display = 'none';
@@ -209,9 +329,11 @@ function showResult() {
   $('resultIcon').textContent  = passed ? '🏆' : '😞';
   $('resultTitle').textContent = passed ? 'مبروك! لقد نجحت!' : 'للأسف لم تنجح';
   $('resultTitle').className   = `result-title ${passed ? 'success' : 'fail'}`;
-  $('resultScore').textContent = `نسبتك: ${pct}% ${passed ? '— تجاوزت عتبة 80%' : '— لم تبلغ عتبة 80% المطلوبة'}`;
+  $('resultScore').textContent =
+    `نسبتك: ${pct}% ${passed ? '— تجاوزت عتبة 80%' : '— لم تبلغ عتبة 80% المطلوبة'}`;
 
   $('resultDetails').innerHTML = `
+    <p>📦 الحزمة: <strong>${currentPack.icon} ${currentPack.name}</strong></p>
     <p>✅ إجابات صحيحة: <strong>${correctCount}</strong></p>
     <p>❌ إجابات خاطئة: <strong>${wrongCount}</strong></p>
     <p>📋 مجموع الأسئلة: <strong>${total}</strong></p>
@@ -220,12 +342,10 @@ function showResult() {
   `;
 }
 
-/** Reset UI and go back to the start screen. */
-function restartQuiz() {
-  $('resultScreen').classList.remove('show');
-  $('startScreen').style.display = 'block';
-  $('quizScreen').style.display  = 'none';
+/** Restart the same pack (useful after a failed attempt). */
+function restartCurrentPack() {
+  if (currentPack) startPack(currentPack);
 }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
-$('totalQCount').textContent = allQuestions.length;
+renderPackScreen();
