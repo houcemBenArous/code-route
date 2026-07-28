@@ -212,7 +212,9 @@ h1 {
   font-weight: bold;
   color: #0f3460;
   border: 4px solid #0f3460;
-  transition: border-color 0.3s, color 0.3s;
+  transition:
+    border-color 0.3s,
+    color 0.3s;
 }
 
 .timer-circle.warning {
@@ -285,10 +287,24 @@ h1 {
   color: #0f3460;
 }
 
-.option-btn.correct { background: #d4edda; border-color: #28a745; color: #155724; }
-.option-btn.wrong   { background: #f8d7da; border-color: #dc3545; color: #721c24; }
-.option-btn.reveal  { background: #d4edda; border-color: #28a745; color: #155724; }
-.option-btn:disabled { cursor: default; }
+.option-btn.correct {
+  background: #d4edda;
+  border-color: #28a745;
+  color: #155724;
+}
+.option-btn.wrong {
+  background: #f8d7da;
+  border-color: #dc3545;
+  color: #721c24;
+}
+.option-btn.reveal {
+  background: #d4edda;
+  border-color: #28a745;
+  color: #155724;
+}
+.option-btn:disabled {
+  cursor: default;
+}
 
 /* =============================================
    Feedback
@@ -302,10 +318,21 @@ h1 {
   display: none;
 }
 
-.feedback.show      { display: block; }
-.feedback.correct-fb { background: #d4edda; color: #155724; }
-.feedback.wrong-fb   { background: #f8d7da; color: #721c24; }
-.feedback.timeout-fb { background: #fff3cd; color: #856404; }
+.feedback.show {
+  display: block;
+}
+.feedback.correct-fb {
+  background: #d4edda;
+  color: #155724;
+}
+.feedback.wrong-fb {
+  background: #f8d7da;
+  color: #721c24;
+}
+.feedback.timeout-fb {
+  background: #fff3cd;
+  color: #856404;
+}
 
 /* =============================================
    Buttons — Next & End
@@ -326,8 +353,12 @@ h1 {
   transition: opacity 0.2s;
 }
 
-.next-btn:hover  { opacity: 0.9; }
-.next-btn.show   { display: block; }
+.next-btn:hover {
+  opacity: 0.9;
+}
+.next-btn.show {
+  display: block;
+}
 
 .end-btn {
   display: block;
@@ -345,18 +376,41 @@ h1 {
   transition: all 0.2s;
 }
 
-.end-btn:hover { background: #e94560; color: #fff; }
+.end-btn:hover {
+  background: #e94560;
+  color: #fff;
+}
 
 /* =============================================
    Result Screen
    ============================================= */
-.result-screen        { display: none; text-align: center; }
-.result-screen.show   { display: block; }
-.result-icon          { font-size: 5rem; margin-bottom: 16px; }
-.result-title         { font-size: 1.8rem; font-weight: bold; margin-bottom: 12px; }
-.result-title.success { color: #28a745; }
-.result-title.fail    { color: #dc3545; }
-.result-score         { font-size: 1.05rem; color: #555; margin-bottom: 20px; }
+.result-screen {
+  display: none;
+  text-align: center;
+}
+.result-screen.show {
+  display: block;
+}
+.result-icon {
+  font-size: 5rem;
+  margin-bottom: 16px;
+}
+.result-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+.result-title.success {
+  color: #28a745;
+}
+.result-title.fail {
+  color: #dc3545;
+}
+.result-score {
+  font-size: 1.05rem;
+  color: #555;
+  margin-bottom: 20px;
+}
 
 .result-details {
   background: #f8f9ff;
@@ -391,7 +445,9 @@ h1 {
   transition: opacity 0.2s;
 }
 
-.restart-btn:hover { opacity: 0.9; }
+.restart-btn:hover {
+  opacity: 0.9;
+}
 
 .back-packs-btn {
   padding: 11px 32px;
@@ -406,7 +462,10 @@ h1 {
   transition: all 0.2s;
 }
 
-.back-packs-btn:hover { background: #0f3460; color: #fff; }
+.back-packs-btn:hover {
+  background: #0f3460;
+  color: #fff;
+}
 
 /* =============================================
    End Quiz Modal
@@ -440,8 +499,14 @@ h1 {
 }
 
 @keyframes modalIn {
-  from { opacity: 0; transform: scale(0.88) translateY(20px); }
-  to   { opacity: 1; transform: scale(1)    translateY(0);    }
+  from {
+    opacity: 0;
+    transform: scale(0.88) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .modal-icon {
@@ -535,4 +600,150 @@ h1 {
   background: #0f3460;
   color: #fff;
   border-color: #0f3460;
+}
+
+/* =============================================
+   Review Mistakes Section
+   ============================================= */
+.review-section {
+  margin-top: 24px;
+  border: 2px solid #e0e4ff;
+  border-radius: 14px;
+  overflow: hidden;
+  text-align: right;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: #f0f4ff;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #0f3460;
+  user-select: none;
+  transition: background 0.2s;
+}
+
+.review-header:hover {
+  background: #e0e8ff;
+}
+
+.review-chevron {
+  font-size: 0.8rem;
+  transition: transform 0.25s;
+}
+
+.review-chevron.open {
+  transform: rotate(180deg);
+}
+
+.review-list {
+  display: none;
+  flex-direction: column;
+  gap: 0;
+}
+
+.review-list.open {
+  display: flex;
+}
+
+/* Individual mistake card */
+.review-card {
+  border-top: 1px solid #e8ecff;
+  padding: 16px 18px;
+  background: #fff;
+  transition: background 0.15s;
+}
+
+.review-card:hover {
+  background: #fafbff;
+}
+
+.review-card-num {
+  font-size: 0.72rem;
+  color: #aaa;
+  margin-bottom: 6px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.review-card-cat {
+  display: inline-block;
+  background: #e8ecff;
+  color: #0f3460;
+  border-radius: 5px;
+  padding: 1px 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.review-card-question {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.review-answers {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.review-answer {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.review-answer.correct-ans {
+  background: #d4edda;
+  color: #155724;
+  border: 1.5px solid #28a745;
+}
+
+.review-answer.wrong-ans {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1.5px solid #dc3545;
+}
+
+.review-answer.timeout-ans {
+  background: #fff3cd;
+  color: #856404;
+  border: 1.5px solid #ffc107;
+}
+
+.review-answer-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.review-answer-text {
+  flex: 1;
+}
+
+.review-answer-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  opacity: 0.7;
+  display: block;
+  margin-bottom: 1px;
+}
+
+/* Skipped (end quiz early) */
+.review-answer.skipped-ans {
+  background: #f5f5f5;
+  color: #666;
+  border: 1.5px solid #ccc;
 }

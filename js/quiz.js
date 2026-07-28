@@ -116,6 +116,7 @@ let wrongCount   = 0;
 let timer        = null;
 let timeLeft     = 30;
 let answered     = false;
+let history      = [];     // { q, chosenText, correct: bool, timeout: bool, skipped: bool }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -180,6 +181,7 @@ function startPack(pack) {
   currentIndex = 0;
   correctCount = 0;
   wrongCount   = 0;
+  history      = [];
 
   $('packScreen').style.display    = 'none';
   $('quizScreen').style.display    = 'block';
@@ -257,12 +259,14 @@ function selectAnswer(btn, isCorrect) {
     correctCount++;
     feedback.textContent = '✅ إجابة صحيحة!';
     feedback.className   = 'feedback show correct-fb';
+    history.push({ q: questions[currentIndex], chosenText: btn.textContent, correct: true, timeout: false, skipped: false });
   } else {
     btn.classList.add('wrong');
     wrongCount++;
     revealCorrectAnswer(allBtns);
     feedback.textContent = '❌ إجابة خاطئة! الإجابة الصحيحة مُعلَّمة باللون الأخضر.';
     feedback.className   = 'feedback show wrong-fb';
+    history.push({ q: questions[currentIndex], chosenText: btn.textContent, correct: false, timeout: false, skipped: false });
   }
 
   $('nextBtn').className = 'next-btn show';
@@ -281,6 +285,7 @@ function onTimeout() {
   feedback.textContent = '⏰ انتهى الوقت! الإجابة الصحيحة مُعلَّمة باللون الأخضر.';
   feedback.className   = 'feedback show timeout-fb';
   $('nextBtn').className = 'next-btn show';
+  history.push({ q: questions[currentIndex], chosenText: null, correct: false, timeout: true, skipped: false });
 }
 
 function revealCorrectAnswer(allBtns) {
@@ -329,8 +334,19 @@ function closeEndQuizModal() {
 function endQuizConfirmed() {
   closeEndQuizModal();
   clearInterval(timer);
-  const remaining = questions.length - currentIndex - (answered ? 1 : 0);
-  wrongCount += remaining;
+
+  // Record current question as skipped if not yet answered
+  if (!answered && currentIndex < questions.length) {
+    history.push({ q: questions[currentIndex], chosenText: null, correct: false, timeout: false, skipped: true });
+  }
+
+  // Mark all remaining questions as skipped
+  const startSkip = currentIndex + (answered ? 1 : 1);
+  for (let i = startSkip; i < questions.length; i++) {
+    history.push({ q: questions[i], chosenText: null, correct: false, timeout: false, skipped: true });
+    wrongCount++;
+  }
+
   showResult();
 }
 
@@ -364,6 +380,90 @@ function showResult() {
     <p>🎯 النسبة المئوية: <strong>${pct}%</strong></p>
     ${!passed ? '<p style="color:#dc3545;margin-top:10px;">⚠️ يجب إعادة الاختبار لتحسين نتيجتك.</p>' : ''}
   `;
+
+  renderReview();
+}
+
+/** Build the mistakes review list. */
+function renderReview() {
+  const mistakes = history.filter(h => !h.correct);
+  const section  = $('reviewSection');
+  const list     = $('reviewList');
+
+  if (mistakes.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = 'block';
+  // Reset to collapsed state
+  list.classList.remove('open');
+  $('reviewChevron').classList.remove('open');
+  $('reviewToggleLabel').textContent = `📋 مراجعة الأخطاء (${mistakes.length} خطأ)`;
+
+  list.innerHTML = mistakes.map((h, i) => {
+    const correctText = h.q.opts[h.q.ans];
+    let chosenBlock = '';
+
+    if (h.skipped) {
+      chosenBlock = `
+        <div class="review-answer skipped-ans">
+          <span class="review-answer-icon">⏭️</span>
+          <div class="review-answer-text">
+            <span class="review-answer-label">لم يُجَب عنه</span>
+            السؤال تم تخطيه
+          </div>
+        </div>`;
+    } else if (h.timeout) {
+      chosenBlock = `
+        <div class="review-answer timeout-ans">
+          <span class="review-answer-icon">⏰</span>
+          <div class="review-answer-text">
+            <span class="review-answer-label">انتهى الوقت</span>
+            لم يتم الإجابة في الوقت المحدد
+          </div>
+        </div>`;
+    } else {
+      chosenBlock = `
+        <div class="review-answer wrong-ans">
+          <span class="review-answer-icon">❌</span>
+          <div class="review-answer-text">
+            <span class="review-answer-label">إجابتك</span>
+            ${h.chosenText}
+          </div>
+        </div>`;
+    }
+
+    return `
+      <div class="review-card">
+        <div class="review-card-num">خطأ ${i + 1} / ${mistakes.length}</div>
+        <span class="review-card-cat">${h.q.cat}</span>
+        <div class="review-card-question">${h.q.q}</div>
+        <div class="review-answers">
+          ${chosenBlock}
+          <div class="review-answer correct-ans">
+            <span class="review-answer-icon">✅</span>
+            <div class="review-answer-text">
+              <span class="review-answer-label">الإجابة الصحيحة</span>
+              ${correctText}
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/** Toggle the review list open/closed. */
+function toggleReview() {
+  const list    = $('reviewList');
+  const chevron = $('reviewChevron');
+  const label   = $('reviewToggleLabel');
+  const isOpen  = list.classList.toggle('open');
+  chevron.classList.toggle('open', isOpen);
+  const count = history.filter(h => !h.correct).length;
+  label.textContent = isOpen
+    ? `📋 إخفاء مراجعة الأخطاء (${count} خطأ)`
+    : `📋 مراجعة الأخطاء (${count} خطأ)`;
 }
 
 /** Restart the same pack (useful after a failed attempt). */
