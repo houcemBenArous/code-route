@@ -133,6 +133,21 @@ function shuffle(arr) {
 /** Shorthand for getElementById. */
 const $ = id => document.getElementById(id);
 
+// ─── Section Switching ────────────────────────────────────────────────────────
+
+/**
+ * Switch between 'quiz' and 'course' top-level sections.
+ * @param {'quiz'|'course'} section
+ */
+function showSection(section) {
+  const isQuiz = section === 'quiz';
+  document.getElementById('sectionQuiz').style.display   = isQuiz ? 'flex' : 'none';
+  document.getElementById('sectionCourse').style.display = isQuiz ? 'none' : 'flex';
+  document.getElementById('tabQuiz').classList.toggle('active', isQuiz);
+  document.getElementById('tabCourse').classList.toggle('active', !isQuiz);
+  if (!isQuiz) renderCourse();
+}
+
 // ─── Pack Screen ──────────────────────────────────────────────────────────────
 
 /** Render all pack cards into #packsGrid. */

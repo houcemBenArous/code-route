@@ -13,10 +13,7 @@ body {
   font-family: "Segoe UI", Tahoma, Arial, sans-serif;
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
   min-height: 100vh;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 24px 16px;
+  margin: 0;
 }
 
 /* =============================================
@@ -746,4 +743,274 @@ h1 {
   background: #f5f5f5;
   color: #666;
   border: 1.5px solid #ccc;
+}
+
+/* =============================================
+   Top Navigation Bar
+   ============================================= */
+.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 500;
+  background: #0f3460;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 56px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+.nav-brand {
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.nav-tab {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.65);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nav-tab:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.nav-tab.active {
+  background: #e94560;
+  color: #fff;
+}
+
+/* =============================================
+   Section Wrappers
+   ============================================= */
+.section-wrap {
+  padding: 24px 16px 40px;
+  min-height: calc(100vh - 56px);
+  display: flex;
+  justify-content: center;
+}
+
+.container--wide {
+  max-width: 900px;
+}
+
+/* =============================================
+   Course Header
+   ============================================= */
+.course-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.course-header .big-icon {
+  font-size: 3rem;
+  margin-bottom: 8px;
+}
+
+/* =============================================
+   Course Search
+   ============================================= */
+.course-search-wrap {
+  margin-bottom: 16px;
+}
+
+.course-search {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e0e4ff;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  color: #1a1a2e;
+  transition: border-color 0.2s;
+  background: #f8f9ff;
+  direction: rtl;
+}
+
+.course-search:focus {
+  border-color: #0f3460;
+  background: #fff;
+}
+
+/* =============================================
+   Category Filter Chips
+   ============================================= */
+.course-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.course-chip {
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 2px solid #e0e4ff;
+  background: #f8f9ff;
+  color: #555;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+
+.course-chip:hover {
+  border-color: #0f3460;
+  color: #0f3460;
+}
+
+.course-chip.active {
+  background: #0f3460;
+  border-color: #0f3460;
+  color: #fff;
+}
+
+/* =============================================
+   Course Content — Category Groups
+   ============================================= */
+.course-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.course-group {
+  border: 2px solid #e0e4ff;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.course-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #0f3460, #1a4a80);
+  cursor: pointer;
+  user-select: none;
+}
+
+.course-group-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.course-group-icon {
+  font-size: 1.2rem;
+}
+
+.course-group-count {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-radius: 12px;
+  padding: 2px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.course-group-chevron {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.85rem;
+  transition: transform 0.25s;
+}
+
+.course-group-chevron.open {
+  transform: rotate(180deg);
+}
+
+.course-group-body {
+  display: none;
+  flex-direction: column;
+}
+
+.course-group-body.open {
+  display: flex;
+}
+
+/* =============================================
+   Course Q&A Cards
+   ============================================= */
+.course-qa {
+  padding: 14px 18px;
+  border-top: 1px solid #eef0ff;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: background 0.15s;
+}
+
+.course-qa:hover {
+  background: #fafbff;
+}
+
+.course-qa-num {
+  font-size: 0.7rem;
+  color: #bbb;
+  font-weight: 600;
+}
+
+.course-qa-question {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  line-height: 1.6;
+}
+
+.course-qa-answer {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: #d4edda;
+  border: 1.5px solid #28a745;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #155724;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.course-qa-answer-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* No results */
+.course-empty {
+  text-align: center;
+  color: #aaa;
+  font-size: 1rem;
+  padding: 40px 0;
+}
+
+/* highlight search match */
+mark {
+  background: #fff3a3;
+  color: inherit;
+  border-radius: 3px;
+  padding: 0 2px;
 }
