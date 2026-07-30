@@ -27,7 +27,7 @@ code permis/
 1. Open `quiz.html` in any modern web browser (Chrome, Firefox, Edge, etc.)
 2. The start screen shows the total number of questions and the rules
 3. Click **"ابدأ الاختبار"** to begin
-4. Read each question and select your answer within **30 seconds**
+4. Read each question and select your answer within **40 seconds**
 5. If time runs out, the correct answer is revealed and the question is marked wrong
 6. At the end, your score is displayed with a pass or fail result
 
@@ -38,7 +38,7 @@ code permis/
 | Rule                  | Detail                                 |
 | --------------------- | -------------------------------------- |
 | Questions per session | All questions (75+), shuffled randomly |
-| Time per question     | 30 seconds                             |
+| Time per question     | 40 seconds                             |
 | Pass threshold        | **80% or higher**                      |
 | Question order        | Random every session                   |
 | Answer choices        | 3 options per question                 |

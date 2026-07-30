@@ -211,7 +211,7 @@ function startPack(pack) {
 /** Load the current question into the DOM. */
 function loadQuestion() {
   answered = false;
-  timeLeft = 30;
+  timeLeft = 40;
   clearInterval(timer);
 
   const q     = questions[currentIndex];
