@@ -1,94 +1,101 @@
-# 🚗 Tunisian Driving License Quiz — Category B
+# 🚗 Code Route — رخصة السياقة صنف ب
 
-An interactive Arabic-language quiz app to help prepare for the **Tunisian Category B driving license exam**. Built with pure HTML, CSS, and JavaScript — no dependencies, no install required.
+An interactive Arabic-language quiz & study app for the **Tunisian Category B driving license exam**, built as a Progressive Web App (PWA) installable on any phone.
+
+Live demo: [code-route.vercel.app](https://code-route.vercel.app)
 
 ---
 
-## 📁 Project Structure
+## Tech Stack
+
+| Layer      | Technology                   |
+| ---------- | ---------------------------- |
+| Framework  | React 18 + TypeScript        |
+| Build tool | Vite 6                       |
+| Styling    | Tailwind CSS v3              |
+| PWA        | vite-plugin-pwa (Workbox)    |
+| Deployment | Vercel (auto-deploy on push) |
+| Font       | Cairo (Google Fonts)         |
+
+---
+
+## Features
+
+- **11 quiz packs** — full pack, 30 random questions, and 9 themed packs by topic
+- **40-second countdown timer** per question with warning pulse animation
+- **Instant feedback** — correct answer revealed in green on wrong answer or timeout
+- **Mistake review** — collapsible section on result screen showing every wrong answer, what you chose, and the correct answer
+- **Early end** — custom modal with live stats (answered / correct / remaining)
+- **Study mode (الدروس)** — all questions grouped by category with correct answers only, live search, category filter chips
+- **PWA** — installable on Android & iOS, works fully offline after first visit
+- **Responsive** — mobile-first design, works on all screen sizes
+
+---
+
+## Project Structure
 
 ```
-code permis/
-├── index.html        # Markup only — app shell and screen templates
-├── manifest.json     # PWA manifest (name, icons, colors)
-├── sw.js             # Service worker (offline caching)
-├── css/
-│   └── style.css     # All styles (layout, components, themes)
-├── js/
-│   ├── questions.js  # Question data (75+ QCM questions)
-│   └── quiz.js       # Quiz engine (state, timer, scoring, rendering)
-├── icons/
-│   ├── icon.svg      # App icon 512×512
-│   └── icon-192.svg  # App icon 192×192
-├── .gitignore        # Excludes rules.md from version control
-└── README.md         # This file
+src/
+├── components/
+│   ├── Nav.tsx                  # Sticky top navigation
+│   ├── quiz/
+│   │   ├── PackGrid.tsx         # Pack selection cards
+│   │   ├── QuizScreen.tsx       # Active quiz (question + options)
+│   │   ├── Timer.tsx            # Countdown circle
+│   │   ├── EndModal.tsx         # End quiz confirmation modal
+│   │   ├── ResultScreen.tsx     # Score + stats
+│   │   └── ReviewSection.tsx    # Collapsible mistake review
+│   └── course/
+│       ├── CourseScreen.tsx     # Study section with search & filters
+│       └── CategoryGroup.tsx    # Collapsible category accordion
+├── data/
+│   ├── questions.ts             # All 180+ questions (typed)
+│   └── packs.ts                 # Pack definitions with filters
+├── hooks/
+│   └── useQuiz.ts               # All quiz engine logic (custom hook)
+├── App.tsx
+├── main.tsx
+└── index.css                    # Tailwind directives + custom components
 ```
 
-> **Note:** `rules.md` (the source study material) is listed in `.gitignore` and is not tracked by Git.
+---
+
+## Getting Started
+
+```bash
+# Install dependencies
+npm install
+
+# Start dev server
+npm run dev
+
+# Build for production
+npm run build
+```
 
 ---
 
-## 🚀 How to Use
+## Deploying to Vercel
 
-1. Open `quiz.html` in any modern web browser (Chrome, Firefox, Edge, etc.)
-2. The start screen shows the total number of questions and the rules
-3. Click **"ابدأ الاختبار"** to begin
-4. Read each question and select your answer within **40 seconds**
-5. If time runs out, the correct answer is revealed and the question is marked wrong
-6. At the end, your score is displayed with a pass or fail result
+1. Push this folder to a GitHub repository
+2. Go to [vercel.com](https://vercel.com) → New Project → Import repo
+3. Vercel auto-detects Vite — no config needed
+4. Click Deploy → live in ~30 seconds
 
----
-
-## 🎯 Quiz Rules
-
-| Rule                  | Detail                                 |
-| --------------------- | -------------------------------------- |
-| Questions per session | All questions (75+), shuffled randomly |
-| Time per question     | 40 seconds                             |
-| Pass threshold        | **80% or higher**                      |
-| Question order        | Random every session                   |
-| Answer choices        | 3 options per question                 |
+Every `git push` triggers an automatic redeploy.
 
 ---
 
-## 📚 Topics Covered
+## PWA Installation
 
-All questions are based strictly on `rules.md` and cover:
+**Android (Chrome):** A green "تثبيت" banner appears automatically — tap to install.
 
-- **Category B License** — seat limits, weight limits, trailer rules, permitted vehicle classes
-- **Violations & Penalties** — point deductions, fines, prison terms, license suspension
-- **Speed Limits** — urban, rural, highway, trainee driver limits, rain/fog reductions
-- **Parking & Stopping** — definitions, distances, curb colors, excessive parking
-- **Lights** — headlights, dipped beams, position lights, range distances
-- **Overtaking** — direction rules, lateral distances, prohibited situations
-- **Road Signs & Traffic Rules** — priority order, roundabouts, stop signs
-- **First Aid** — emergency numbers, CPR rates, bleeding protocol, unconscious victim positioning
-- **Mechanics** — battery, air filter, spark plugs, tire pressure, fluid levels
-- **Load Rules** — front/rear overhang limits, marking requirements
-- **License Renewal** — renewal schedule by age group
-- **Technical Inspection** — periodic and random inspection rules
+**iOS (Safari):** Tap Share → "Add to Home Screen".
+
+Once installed, the app works **fully offline**.
 
 ---
 
-## ✅ Pass / Fail
+## License
 
-- **Pass:** Score ≥ 80% → 🏆 Congratulations screen
-- **Fail:** Score < 80% → 😞 Fail screen with a prompt to retry
-
-You can restart the quiz at any time from the result screen. Each new session reshuffles all questions.
-
----
-
-## 🛠️ Technical Details
-
-- **No frameworks or libraries** — plain HTML5, CSS3, and vanilla JavaScript
-- **No internet connection required** — fully offline
-- **Single file** — everything is self-contained in `quiz.html`
-- Compatible with all modern browsers on Windows, macOS, and mobile
-
----
-
-## 📝 Source Material
-
-All quiz content is derived from `rules.md`, which contains the official Tunisian driving regulations for Category B, including traffic law, first aid procedures, vehicle mechanics, and road sign rules.
-
-`rules.md` is excluded from version control via `.gitignore` — it is private study material and should not be committed to any repository.
+MIT

@@ -1,2 +1,6 @@
-# Ignore source rules file (private study material)
-rules.md
+node_modules
+dist
+.env
+.env.local
+*.local
+legacy/rules.md
