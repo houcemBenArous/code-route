@@ -9,11 +9,16 @@ An interactive Arabic-language quiz app to help prepare for the **Tunisian Categ
 ```
 code permis/
 ├── index.html        # Markup only — app shell and screen templates
+├── manifest.json     # PWA manifest (name, icons, colors)
+├── sw.js             # Service worker (offline caching)
 ├── css/
 │   └── style.css     # All styles (layout, components, themes)
 ├── js/
 │   ├── questions.js  # Question data (75+ QCM questions)
 │   └── quiz.js       # Quiz engine (state, timer, scoring, rendering)
+├── icons/
+│   ├── icon.svg      # App icon 512×512
+│   └── icon-192.svg  # App icon 192×192
 ├── .gitignore        # Excludes rules.md from version control
 └── README.md         # This file
 ```

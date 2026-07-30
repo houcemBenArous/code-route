@@ -3,16 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>رخصة السياقة صنف ب — تونس</title>
+    <title>Code Route — رخصة صنف ب</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="css/style.css" />
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#1e3a5f" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Code Route" />
+    <link rel="apple-touch-icon" href="icons/icon.svg" />
   </head>
   <body>
 
     <!-- ══════════════ TOP NAV ══════════════ -->
     <nav class="top-nav">
-      <div class="nav-brand">🚗 رخصة صنف ب</div>
+      <div class="nav-brand">🚗 Code Route</div>
       <div class="nav-tabs">
         <button class="nav-tab active" id="tabQuiz" onclick="showSection('quiz')">
           📝 الاختبار
@@ -21,6 +30,9 @@
           📖 الدروس
         </button>
       </div>
+      <button class="nav-install-btn" id="installBtn" style="display:none" onclick="installApp()">
+        ⬇️ تثبيت
+      </button>
     </nav>
 
     <!-- ══════════════ QUIZ SECTION ══════════════ -->
@@ -134,5 +146,42 @@
     <script src="js/questions.js"></script>
     <script src="js/quiz.js"></script>
     <script src="js/course.js"></script>
+    <script>
+      // ── Service Worker Registration ──────────────────────────
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+      }
+
+      // ── PWA Install Prompt ───────────────────────────────────
+      let deferredPrompt = null;
+      const installBtn   = document.getElementById('installBtn');
+
+      window.addEventListener('beforeinstallprompt', e => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installBtn.style.display = 'flex';
+      });
+
+      function installApp() {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => {
+          deferredPrompt = null;
+          installBtn.style.display = 'none';
+        });
+      }
+
+      // Hide button once installed
+      window.addEventListener('appinstalled', () => {
+        installBtn.style.display = 'none';
+        deferredPrompt = null;
+      });
+
+      // Handle shortcut URL params (?tab=quiz|course)
+      const urlTab = new URLSearchParams(location.search).get('tab');
+      if (urlTab === 'course') showSection('course');
+    </script>
   </body>
 </html>
