@@ -35,6 +35,12 @@ export default function CategoryGroup({ cat, icon, questions, search }: Props) {
           {questions.map((q, i) => (
             <div key={i} className="px-5 py-3.5 bg-white hover:bg-slate-50 transition-colors flex flex-col gap-2">
               <span className="text-xs text-slate-300 font-bold uppercase tracking-widest">س {i + 1}</span>
+              {/* Image if present */}
+              {q.image && (
+                <div className="rounded-lg overflow-hidden border border-slate-200 bg-slate-50">
+                  <img src={q.image} alt="صورة السؤال" className="w-full max-h-48 object-contain p-1.5" />
+                </div>
+              )}
               <p
                 className="text-sm font-semibold text-slate-800 leading-relaxed"
                 dangerouslySetInnerHTML={{ __html: highlight(q.q, search) }}

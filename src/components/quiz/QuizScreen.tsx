@@ -108,6 +108,17 @@ export default function QuizScreen({ quiz }: Props) {
         <span className="badge">{q.cat}</span>
       </div>
 
+      {/* Question image */}
+      {q.image && (
+        <div className="mb-4 rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-slate-50">
+          <img
+            src={q.image}
+            alt="صورة السؤال"
+            className="w-full max-h-56 object-contain p-2"
+          />
+        </div>
+      )}
+
       {/* Question */}
       <div className="bg-slate-50 border-r-4 border-blue-600 rounded-xl p-4 mb-5 text-slate-800 font-bold text-base leading-loose shadow-sm">
         {q.q}
